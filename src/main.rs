@@ -4,12 +4,12 @@ mod sub;
 use sub::{open_file, get_user_data, write_data_to_file};
 
 fn main() {
-    let mut is_loop_continue = "".to_string();
+    let mut is_loop_continue = String::new();
 
     /* Запускаем бесконечный цикл опроса */
     loop {
         // Проверяем нужно ли продолжать цикл
-        if is_loop_continue.chars().count() != 0 {
+        if is_loop_continue.chars().count() > 1 {
             println!("Data saved. Power off.");
             // Выход с цикла
             break;
@@ -30,6 +30,7 @@ fn main() {
         // stop = &mut String::new();
 
 
+        is_loop_continue = String::new();
         stdin().read_line(&mut is_loop_continue)
             .ok()
             .expect("Failed to read line");
