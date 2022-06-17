@@ -2,6 +2,8 @@ use std::fs::{File, OpenOptions};
 use std::io::{stdin, Write};
 use std::path::Path;
 
+use webpage::{Webpage, WebpageOptions};
+
 fn create_file(file_name: &str) -> std::io::Result<File> {
     return OpenOptions::new().write(true)
         .create_new(true)
@@ -43,4 +45,11 @@ pub fn write_data_to_file(mut file: File, link: String, title: String, opinion: 
     write!(&mut file, "Title: {}", title).expect("TODO: panic message");
     write!(&mut file, "Opinion: {}", opinion).expect("TODO: panic message");
     write!(&mut file, "\n").expect("TODO: panic message");
+}
+
+pub fn get_url_title(url: String) -> String {
+    let info = Webpage::from_url(url.trim(), WebpageOptions::default())
+        .expect("Could not read from URL");
+
+    return info.html.title.unwrap().replace(" / Хабр", "\n");
 }
