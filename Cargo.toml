@@ -8,3 +8,10 @@ edition = "2021"
 [dependencies]
 dirs = "4.0.0"
 webpage = "1.4.0"
+
+[profile.dev]
+opt-level = 0
+
+[profile.release]
+lto = true
+opt-level = 3
