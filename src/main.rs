@@ -1,12 +1,7 @@
 use std::io::stdin;
 
 mod sub;
-use sub::{
-    open_file,
-    get_url_title,
-    get_user_data,
-    write_data_to_file,
-};
+use sub::{get_url_title, get_user_data, open_file, write_data_to_file};
 
 fn main() {
     let mut is_loop_continue = String::new();
@@ -34,7 +29,8 @@ fn main() {
         println!("y (Enter) / n (type something)");
 
         is_loop_continue = String::new();
-        stdin().read_line(&mut is_loop_continue)
+        stdin()
+            .read_line(&mut is_loop_continue)
             .ok()
             .expect("Failed to read line");
 

@@ -1,30 +1,36 @@
 use std::fs::{File, OpenOptions};
 use std::io::{stdin, Write};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
+use dirs::home_dir;
 use webpage::{Webpage, WebpageOptions};
 
-fn create_file(file_name: &str) -> std::io::Result<File> {
-    return OpenOptions::new().write(true)
+fn create_file(file_path: &PathBuf) -> std::io::Result<File> {
+    return OpenOptions::new()
+        .write(true)
         .create_new(true)
-        .open(file_name);
+        .open(file_path);
 }
 
 pub fn open_file() -> File {
-    let file_name = "hbr.txt";
-    let is_file_exists = Path::new(file_name).exists();
     let file;
+    let file_name = "hbr.txt";
 
-    // Если файл существует - готовимся писать в него
-    if is_file_exists {
+    let home_dir = &home_dir().expect("Error: Impossible to get your home dir.");
+    let home = Path::new(home_dir);
+
+    let home_dir = home.join(file_name);
+
+    if !home_dir.exists() {
+        // If the file doesn't exist, create it and get ready to write to it
+        file = create_file(&home_dir).expect("Error: Impossible to create hbr.txt file.");
+    } else {
+        // If the file exists, get ready to write into it
         file = OpenOptions::new()
             .write(true)
             .append(true)
-            .open(file_name)
+            .open(home_dir)
             .unwrap();
-    } else {
-        // Если файл не существует - создаём его и готовимся писать в него
-        file = create_file(file_name).expect("TODO: panic message");
     }
 
     return file;
@@ -33,7 +39,8 @@ pub fn open_file() -> File {
 pub fn get_user_data(field_name: &str) -> String {
     println!("Enter {}:", field_name);
     let mut data = String::new();
-    stdin().read_line(&mut data)
+    stdin()
+        .read_line(&mut data)
         .ok()
         .expect("Failed to read line");
 
@@ -41,15 +48,17 @@ pub fn get_user_data(field_name: &str) -> String {
 }
 
 pub fn write_data_to_file(mut file: File, link: String, title: String, opinion: String) {
-    write!(&mut file, "Link: {}", link).expect("TODO: panic message");
-    write!(&mut file, "Title: {}", title).expect("TODO: panic message");
-    write!(&mut file, "Opinion: {}", opinion).expect("TODO: panic message");
-    write!(&mut file, "\n").expect("TODO: panic message");
+    let error_text = "Unable to write to file.";
+
+    write!(&mut file, "Link: {}", link).expect(error_text);
+    write!(&mut file, "Title: {}", title).expect(error_text);
+    write!(&mut file, "Opinion: {}", opinion).expect(error_text);
+    write!(&mut file, "\n").expect(error_text);
 }
 
 pub fn get_url_title(url: String) -> String {
-    let info = Webpage::from_url(url.trim(), WebpageOptions::default())
-        .expect("Could not read from URL");
+    let info =
+        Webpage::from_url(url.trim(), WebpageOptions::default()).expect("Could not read from URL");
 
     return info.html.title.unwrap().replace(" / Хабр", "\n");
 }
