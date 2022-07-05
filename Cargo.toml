@@ -1,9 +1,10 @@
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+cargo-features = ["strip"]
+
 [package]
 name = "hbr"
 version = "1.0.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 dirs = "4.0.0"
@@ -13,5 +14,7 @@ webpage = "1.4.0"
 opt-level = 0
 
 [profile.release]
+codegen-units = 1
 lto = true
 opt-level = 3
+strip = true
